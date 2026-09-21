@@ -11,8 +11,8 @@ export function Hero() {
       <Image src={homeBg} alt="" fill priority sizes="100vw" className="object-cover" />
       <div className="from-inverse/10 via-inverse/35 to-inverse/65 absolute inset-0 bg-linear-to-b" />
       <Container className="relative flex justify-center py-32 md:py-40">
-        <div className="relative flex max-w-243.5 flex-col items-center gap-10">
-          <div className="flex flex-col items-center gap-3 text-center">
+        <div className="relative flex max-w-243.5 flex-col items-center gap-12 lg:gap-14">
+          <div className="flex flex-col items-center gap-5 text-center">
             <h1 className="text-h1-m text-nv-100 md:text-h1 font-bold text-balance">
               <OrbitHighlight>Shop locally.</OrbitHighlight> Get it delivered <br className="hidden md:inline" /> Instantly
             </h1>

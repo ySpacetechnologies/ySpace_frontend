@@ -36,7 +36,7 @@ export function HowItWorks() {
             <h2 className="text-h2-m md:text-h2 font-bold text-neutral-900">How Yspace Works</h2>
             <p className="text-h3-m md:text-6 font-medium text-neutral-400 md:leading-8 md:tracking-[-0.002em]">From order to doorstep — our drones make delivery seamless, fast, and reliable.</p>
           </div>
-          <div className="relative mx-auto flex w-full max-w-313.75 flex-col gap-20 lg:gap-30">
+          <div className="relative mx-auto flex w-full max-w-280 flex-col gap-20 lg:gap-30">
             <div aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-1.25 -translate-x-1/2 md:block">
               <div className="bg-nv-600 h-full w-full rounded-full" />
               <div className="bg-primary-900 scroll-fill absolute inset-0 w-full rounded-full" />
