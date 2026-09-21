@@ -1,0 +1,9 @@
+{
+  "tailwindFunctions": ["clsx", "cn", "cva"],
+  "semi": false,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "printWidth": 1000,
+  "tabWidth": 2,
+  "plugins": ["prettier-plugin-tailwindcss"]
+}

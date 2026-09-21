@@ -1,0 +1,17 @@
+import futurePlan from "./future-plan.jpg"
+import homeBg from "./homebg.png"
+import item1 from "./item1.jpg"
+import item2 from "./item2.jpg"
+import item3 from "./item3.jpg"
+import item4 from "./item4.jpg"
+import logoWhite from "./yspaceLogoW.png"
+import solution1 from "./solution1.png"
+import solution2 from "./solution2.png"
+import solution3 from "./solution3.png"
+import tmotor from "./tMotor.png"
+import work1 from "./work1.png"
+import work2 from "./work2.png"
+import work3 from "./work3.png"
+import work4 from "./work4.png"
+
+export { futurePlan, homeBg, item1, item2, item3, item4, logoWhite, solution1, solution2, solution3, tmotor, work1, work2, work3, work4 }
