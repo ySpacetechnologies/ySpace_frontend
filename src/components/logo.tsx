@@ -4,10 +4,14 @@ import Link from "next/link"
 import { logoWhite } from "@public/index"
 import { cn } from "@/lib"
 
-export function Logo({ className, chip = false }: { className?: string; chip?: boolean }) {
+/**
+ * Brand logo mark. Dark surfaces use the white mark as-is;
+ * light surfaces invert it to black for contrast.
+ */
+export function Logo({ className, dark = true }: { className?: string; dark?: boolean }) {
   return (
-    <Link href="/" aria-label="ySpace home" className={cn("inline-flex w-fit items-center", chip && "bg-inverse rounded-full", className)}>
-      <Image src={logoWhite} alt="ySpace" sizes="100" priority />
+    <Link href="/" aria-label="ySpace home" className={cn("inline-flex w-fit items-center", className)}>
+      <Image src={logoWhite} alt="ySpace" sizes="100" priority className={cn("h-7 w-auto md:h-8", dark ? "" : "invert")} />
     </Link>
   )
 }

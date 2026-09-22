@@ -1,18 +1,22 @@
 import Link from "next/link"
 import { Button, Container } from "@/components"
+import { Starfield } from "@/components/starfield"
 
 export default function NotFound() {
   return (
-    <Container className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-      <p className="text-caption text-content-brand font-semibold tracking-widest uppercase">404</p>
-      <h1 className="md:text-h2 mt-3 text-[24px] leading-10.5 font-bold tracking-[-0.4px]">This page took a different route</h1>
-      <p className="text-body-lg text-content-secondary mt-4 max-w-md">The page you are looking for does not exist or has been moved.</p>
-      <Button href="/" className="mt-8">
-        Back to Home
-      </Button>
-      <Link href="/contact" className="text-body text-content-brand mt-6 font-medium hover:underline">
-        Contact support
-      </Link>
-    </Container>
+    <div className="bg-inverse text-inverse relative flex min-h-screen flex-col items-center justify-center overflow-hidden text-center">
+      <Starfield />
+      <Container className="relative flex flex-col items-center py-24">
+        <p className="text-caption text-primary-100 font-semibold tracking-widest uppercase">404 — off-nominal trajectory</p>
+        <h1 className="text-h1-m md:text-h1 mt-4">Signal lost</h1>
+        <p className="text-body-lg-m md:text-body-lg mt-4 max-w-md text-white/80">This page took a different route. The drone circled twice and came back empty.</p>
+        <Button href="/" className="mt-8">
+          Return to base
+        </Button>
+        <Link href="/contact" className="text-caption text-primary-100 hover:text-primary-50 mt-6 font-semibold tracking-widest uppercase underline decoration-2 underline-offset-4 transition-colors">
+          Contact support
+        </Link>
+      </Container>
+    </div>
   )
 }

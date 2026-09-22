@@ -4,7 +4,7 @@ import type { ComponentProps, ReactNode } from "react"
 import { cn } from "@/lib"
 
 type ButtonBaseProps = {
-  variant?: "primary" | "outline"
+  variant?: "primary" | "outline" | "ghost"
   size?: "md" | "lg"
   loading?: boolean
   className?: string
@@ -17,11 +17,12 @@ type ButtonAsLink = ButtonBaseProps & Omit<ComponentProps<typeof Link>, "classNa
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink
 
-const baseStyles = "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full text-button transition-[background-color,border-color,color,opacity] duration-150"
+const baseStyles = "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full text-button transition-[background-color,border-color,color,opacity,transform,box-shadow] duration-150 active:scale-[0.98]"
 
 const variantStyles = {
-  primary: "bg-action text-on-brand hover:bg-action-hover active:bg-action-pressed active:opacity-85 disabled:bg-action-disabled disabled:text-content-disabled",
-  outline: "border border-edge-brand bg-transparent text-content-brand hover:bg-primary-50 active:opacity-85 disabled:border-edge disabled:text-content-disabled disabled:bg-transparent",
+  primary: "bg-action text-on-brand shadow-brand hover:bg-action-hover disabled:border-edge disabled:bg-action-disabled disabled:text-content-disabled",
+  outline: "border-2 border-edge-brand bg-transparent text-content-brand hover:bg-primary-50 disabled:border-edge disabled:text-content-disabled",
+  ghost: "bg-transparent text-content hover:bg-primary-50 disabled:text-content-disabled",
 } as const
 
 const sizeStyles = {

@@ -5,11 +5,11 @@ export type NavLink = {
 }
 
 export const homeSectionNav: NavLink[] = [
-  { label: "Solutions", href: "/#top-notch" },
-  { label: "Categories", href: "/#categories" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "FAQs", href: "/#faqs" },
-  { label: "Future Plans", href: "/#future-plans" },
+  { label: "Missions", href: "/#missions" },
+  { label: "Manifest", href: "/#manifest" },
+  { label: "Flight Sequence", href: "/#flight-sequence" },
+  { label: "Comms", href: "/#comms" },
+  { label: "Deep Space", href: "/#deep-space" },
 ]
 
 export const marketNav: NavLink[] = [
