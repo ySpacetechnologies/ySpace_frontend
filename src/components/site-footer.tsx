@@ -8,36 +8,34 @@ type FooterLink = { label: string; href: string; external?: boolean }
 
 const columns: { heading: string; links: FooterLink[] }[] = [
   {
-    heading: "Services",
-    links: [
-      { label: "Send a Package", href: "/send-package" },
-      { label: "For Businesses", href: "/vendors" },
-      { label: "Marketplace", href: "/marketplace" },
-      { label: "Photography & Videography", href: "/photography" },
-      { label: "Drone Service & Repairs", href: "/drone-repairs" },
-    ],
-  },
-  {
     heading: "Company",
     links: [
-      { label: "Technology", href: "/technology" },
-      { label: "Crowdfunding", href: "/crowdfunding" },
+      { label: "About Yspace", href: "/technology" },
       { label: "Careers", href: "/career" },
-      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
-    heading: "Support",
+    heading: "Products",
     links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "FAQs", href: "/#comms" },
+      { label: "Drone Delivery", href: "/send-package" },
+      { label: "Send a Package", href: "/send-package" },
+      { label: "Marketplace", href: "/marketplace" },
+      { label: "Autonomous Route Intelligence", href: "/vendors" },
+    ],
+  },
+  {
+    heading: "Services",
+    links: [
+      { label: "Photography & Videography", href: "/photography" },
+      { label: "Drone Services & Repair", href: "/drone-repairs" },
     ],
   },
   {
     heading: "Legal",
     links: [
-      { label: "Terms of Service", href: "/terms" },
       { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 ]

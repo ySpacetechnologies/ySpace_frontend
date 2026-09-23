@@ -4,34 +4,26 @@ export type NavLink = {
   items?: { label: string; href: string }[]
 }
 
+/**
+ * Site-header rule: the header only ever shows links to sections of the page
+ * it's on — never links to other pages. All page navigation lives in the
+ * footer (Company / Products / Services / Legal columns).
+ */
+
 export const homeSectionNav: NavLink[] = [
-  { label: "Missions", href: "/#missions" },
-  { label: "Manifest", href: "/#manifest" },
-  { label: "Flight Sequence", href: "/#flight-sequence" },
-  { label: "Comms", href: "/#comms" },
-  { label: "Deep Space", href: "/#deep-space" },
+  { label: "What we do", href: "/#what-yspace-does" },
+  { label: "Delivery", href: "/#send-package" },
+  { label: "Enterprise", href: "/#route-intelligence" },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "The Future", href: "/#deep-space" },
 ]
 
-export const marketNav: NavLink[] = [
-  {
-    label: "Service",
-    href: "/marketplace",
-    items: [
-      { label: "Shop on Marketplace", href: "/marketplace" },
-      { label: "Send Packages", href: "/send-package" },
-    ],
-  },
-  { label: "Technology", href: "/technology" },
-  { label: "Vendors", href: "/vendors" },
-  { label: "Crowdfunding", href: "/crowdfunding" },
-  { label: "Company", href: "/company" },
-  {
-    label: "More",
-    href: "/contact",
-    items: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "Careers", href: "/career" },
-      { label: "Blog", href: "/blog" },
-    ],
-  },
+export const photographyNav: NavLink[] = [
+  { label: "What we cover", href: "/photography#coverage" },
+  { label: "Book a service", href: "/photography#booking" },
+]
+
+export const droneRepairsNav: NavLink[] = [
+  { label: "Services", href: "/drone-repairs#services" },
+  { label: "Request repair", href: "/drone-repairs#repair" },
 ]

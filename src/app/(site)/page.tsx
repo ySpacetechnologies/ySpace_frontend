@@ -1,15 +1,17 @@
-import { CargoManifest, CommsLog, DeepSpaceProgram, FlightSequence, LaunchTicker, MissionBriefing, MissionsLog } from "@/components"
+import { BuiltForLogistics, DeepSpaceProgram, FinalCta, HowItWorks, IntelligenceMap, MissionBriefing, RouteIntelligence, SendPackageSection, WhatYspaceDoes } from "@/components"
 
 export default function HomePage() {
   return (
     <>
       <MissionBriefing />
-      <LaunchTicker />
-      <MissionsLog />
-      <CargoManifest />
-      <FlightSequence />
-      <CommsLog />
+      <WhatYspaceDoes />
+      <SendPackageSection />
+      <RouteIntelligence />
+      <IntelligenceMap />
+      <HowItWorks />
+      <BuiltForLogistics />
       <DeepSpaceProgram />
+      <FinalCta />
     </>
   )
 }

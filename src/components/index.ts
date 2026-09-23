@@ -1,3 +1,4 @@
+export * from "./drone-stage"
 export * from "./home"
 export * from "./logo"
 export * from "./page-placeholder"

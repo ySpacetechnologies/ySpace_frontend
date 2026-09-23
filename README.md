@@ -40,7 +40,7 @@ src/
 │   ├── starfield.tsx      Framer-motion starfield (drifting/twinkling stars + nebula)
 │   ├── page-placeholder.tsx
 │   └── ui/                Button, Container + index barrel
-├── config/nav.ts          homeSectionNav (in-page anchors) + marketNav (routes)
+├── config/nav.ts          per-page section navs (header shows in-page sections only; page navigation lives in the footer)
 └── lib/utils.ts           cn() class-merging helper
 ```
 
@@ -50,15 +50,17 @@ Every folder has an `index.ts` barrel; app code imports via `@/components`, `@/c
 
 Composed purely from `components/home/` section components, following the Logistics Platform PRD:
 
-`MissionBriefing → LaunchTicker → MissionsLog → CargoManifest → FlightSequence → CommsLog → DeepSpaceProgram`
+`MissionBriefing → WhatYspaceDoes → SendPackageSection → RouteIntelligence → IntelligenceMap → HowItWorks → BuiltForLogistics → DeepSpaceProgram → FinalCta`
 
-- **MissionBriefing** — full-viewport space hero: deep-space gradient + starfield, animated orbit system (drone satellite, relay blips, floating delivery chips), staggered PRD headline ("Move what matters, faster.") with Send a Package + For Businesses CTAs
-- **LaunchTicker** — infinite marquee of capability phrases (`--animate-marquee`, `motion-reduce` safe)
-- **MissionsLog** — the two PRD use cases + marketplace as soft cards with scroll-reveal animations
-- **CargoManifest** — payloads as a rounded manifest table (`PLD-0x`) with clearance chips
-- **FlightSequence** — four booking/delivery phases mirroring the PRD delivery states (Created → Pickup → In transit → Delivered)
-- **CommsLog** — FAQ as rounded accordion items
-- **DeepSpaceProgram** — vision-only roadmap (badge: "not bookable today") on a dark starfield band, per the PRD's critical content rule
+- **MissionBriefing** — full-viewport space hero: deep-space gradient + starfield, interactive 3D drone (react-three-fiber, `components/drone-stage.tsx`) with pointer parallax and scroll fly-away, PRD headline ("Move what matters, faster.") with Send a Package + For Businesses CTAs
+- **WhatYspaceDoes** — the two products (Drone Delivery / Autonomous Route Intelligence) + the "smarter transportation" positioning
+- **SendPackageSection** — visual booking mock (From / To / Package) with the Get Delivery Estimate CTA
+- **RouteIntelligence** — B2B pipeline (Your System → Yspace Intelligence → Better Route → Your Driver) + six capability highlights + Explore Enterprise CTA
+- **IntelligenceMap** — SVG city map with recommended vs alternative routes (41 min / 49 min) and the traffic reasoning
+- **HowItWorks** — Connect → Analyze → Optimize three-step visual
+- **BuiltForLogistics** — industries + vehicle types (no infrastructure replacement)
+- **DeepSpaceProgram** — "The future of transportation is faster." with the China → hubs → autonomous delivery → customer journey, vision-only badge, on the `drone.mp4` video backdrop
+- **FinalCta** — clean closing "Move what matters, faster." with both CTAs
 
 Header links target these sections via `/#section-id` anchors on the homepage; scroll-spy highlights the section in view. Sections carry `scroll-mt-24` to clear the floating header; smooth scroll is on `html`.
 
