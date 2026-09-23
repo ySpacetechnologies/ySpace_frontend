@@ -1,9 +1,5 @@
 "use client"
-
 import { motion } from "framer-motion"
-import { ChevronDown } from "lucide-react"
-import Link from "next/link"
-
 import { DroneStage } from "@/components/drone-stage"
 import { Button, Container } from "@/components/ui"
 import { Starfield } from "@/components/starfield"
@@ -25,10 +21,9 @@ const readouts = [
   { label: "City-wide coverage", dot: "bg-white/70" },
 ]
 
-/** Real 3D drone on a soft orbit backdrop, with floating customer-safe status chips. */
 function HeroScene() {
   return (
-    <motion.div className="relative mx-auto w-full max-w-[560px]" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.35, ease: easeOut }}>
+    <motion.div className="relative mx-auto w-full max-w-140" initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.35, ease: easeOut }}>
       {/* Orbit rings drawn behind the 3D drone for depth */}
       <div aria-hidden className="absolute inset-0">
         <div className="border-primary-300/20 absolute top-1/2 left-1/2 size-[86%] -translate-x-1/2 -translate-y-1/2 rounded-full border" />
@@ -64,13 +59,8 @@ export function MissionBriefing() {
       <Container className="relative flex flex-1 items-center pt-40 pb-24 md:pt-48 lg:pt-36">
         <div className="grid w-full items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="flex flex-col items-start gap-7">
-            <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={0} className="text-caption inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 font-semibold">
-              <span className="bg-secondary-200 animate-pulse-soft size-1.5 rounded-full" />
-              Autonomous drone logistics — available today
-            </motion.p>
-
             <motion.h1 variants={fadeUp} initial="hidden" animate="visible" custom={0.1} className="text-h1-m md:text-h1 max-w-xl">
-              Move what matters, <span className="from-primary-100 via-primary-300 to-primary-500 bg-gradient-to-r bg-clip-text text-transparent">faster.</span>
+              Move what matters, <span className="from-primary-100 via-primary-300 to-primary-500 bg-linear-to-r bg-clip-text text-transparent">faster.</span>
             </motion.h1>
 
             <motion.p variants={fadeUp} initial="hidden" animate="visible" custom={0.2} className="text-body-lg-m md:text-body-lg max-w-lg text-white/75">
@@ -99,16 +89,6 @@ export function MissionBriefing() {
           <HeroScene />
         </div>
       </Container>
-
-      {/* Scroll cue */}
-      <motion.div aria-hidden className="relative flex justify-center pb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2, duration: 0.8 }}>
-        <Link href="/#what-yspace-does" className="text-caption flex flex-col items-center gap-1 font-semibold text-white/50 transition-colors hover:text-white/80">
-          Scroll to explore
-          <motion.span animate={{ y: [0, 5, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}>
-            <ChevronDown className="size-4" />
-          </motion.span>
-        </Link>
-      </motion.div>
     </section>
   )
 }
