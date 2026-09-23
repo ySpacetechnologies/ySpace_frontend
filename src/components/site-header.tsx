@@ -2,7 +2,6 @@
 import { Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
-
 import { Logo } from "./logo"
 import { MobileMenu, SectionNav } from "./header-parts"
 import { Button } from "./ui"
@@ -50,7 +49,7 @@ export function SiteHeader({ variant = "market" }: { variant?: SiteHeaderVariant
 
   return (
     <header className="fixed inset-x-0 top-3 z-40 md:top-5">
-      <div className="mx-auto w-[92%] max-w-[1180px] lg:w-[80%]">
+      <div className="mx-auto w-[92%] max-w-295 lg:w-[80%]">
         <div className="border-edge bg-elevated/95 rounded-3xl border shadow-lg backdrop-blur-md">
           <div className="flex h-16 items-center justify-between gap-4 px-4 md:h-18 md:px-6">
             {/* Left: logo + section nav, never centered */}
