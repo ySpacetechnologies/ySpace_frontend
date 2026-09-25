@@ -42,8 +42,6 @@ public/
   logo/              Wordmark + icon exports (favicon, apple-touch-icon)
   videos/            Hero + drop-sequence clips and their posters
   og.jpg             Share card (1200×630)
-  __grok/            PWA install assets served by the platform
-server/              Request middleware
 scripts/             Build, preview, QA and migration tooling
 migrations/          SQL migrations (applied at deploy when a DB is configured)
 screenshots/         QA output only — regenerated, never committed
@@ -55,10 +53,11 @@ Everything else at the root is build configuration: `package.json`,
 
 ### What is intentionally not in the repo
 
-See `.gitignore`. Notably `node_modules/`, `.vercel/`, `.tanstack/`,
-`screenshots/*`, `AGENTS.md`, `startup.sh`, `*.log` and `.env*` are excluded,
-while `.grok/app-env.json` is kept because it pins `VITE_AUTH_ENABLED` for both
-`npm run dev` and `npm run build`.
+See `.gitignore`: `node_modules/`, `.vercel/`, `.tanstack/`, `screenshots/*`,
+`startup.sh`, `*.log` and `.env*`.
+
+Sign-in and the database are **off** for this site — no routes use them. If you
+ever enable them, set `VITE_AUTH_ENABLED` and `DATABASE_URL` in your environment.
 
 ### Landing page sections
 

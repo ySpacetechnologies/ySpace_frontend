@@ -11,11 +11,7 @@ dist/
 screenshots/*
 !screenshots/.gitkeep
 
-# Workspace tooling (agent instructions, logs, scratch exports).
-# `.grok/app-env.json` is kept: it pins VITE_AUTH_ENABLED for dev and build.
-.grok/*
-!.grok/app-env.json
-AGENTS.md
+# Workspace tooling and logs
 startup.sh
 *.log
 
