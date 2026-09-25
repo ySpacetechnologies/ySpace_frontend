@@ -5,17 +5,26 @@ const LEG_KM = 18.2;
 /** One Ikeja -> Lekki leg. Two legs make the round trip. */
 const ONE_WAY_MS = 7000;
 const ACCENT = "#3b82f6";
+/** How long one vehicle takes to crawl the whole road — the point is that it is slow. */
+const TRAFFIC_CYCLE_MS = 46000;
+/** Where each vehicle sits on the road. Equal speeds, so the gaps never close. */
+const TRAFFIC_AT = [0.04, 0.19, 0.3, 0.335, 0.57, 0.83];
+const VEHICLES = ["car", "car", "bus", "car", "car", "bus"] as const;
+/** Fraction of the trip spent lifting off / touching down. */
+const LIFT_IN = 0.18;
+const LIFT_OUT = 0.8;
 
 type Pt = { x: number; y: number };
 type Label = { x: number; y: number; anchor: "start" | "end" };
 type Tail = { t: number; w: number; o: number };
 
 /**
- * One scene, two geometries. The desktop strip is a 1200x280 panorama, which
- * a phone can only show as a thin ribbon with most of the box empty — so under
- * the `sm` breakpoint the same route is re-drawn in a 600x480 frame: steeper
- * diagonal, heavier strokes, larger type. Every number below is sized so both
- * layouts paint at the same pixel scale.
+ * One scene, two geometries. The desktop strip is a 1200x325 panorama, which
+ * a phone can only show as a thin ribbon with most of the box empty — so below
+ * the `lg` breakpoint the same route is re-drawn in a 600x520 frame: steeper
+ * diagonal, heavier strokes, larger type. Both frames carry headroom above the
+ * road so the drone flies clear of it instead of along it, and every number
+ * below is sized so both layouts paint at the same pixel scale.
  *
  * `wide` mirrors Tailwind's `lg:` (1024px) — the narrowest width at which the
  * panorama renders labels at a legible size — and starts `true`, because the
@@ -23,7 +32,8 @@ type Tail = { t: number; w: number; o: number };
  */
 type Layout = {
   viewBox: string;
-  flight: string;
+  /** The white line: the road the cars crawl along. */
+  road: string;
   alt: string;
   start: Pt;
   end: Pt;
@@ -37,6 +47,10 @@ type Layout = {
   lagoon: string;
   /** Dash used to hide the route until it draws; must be >= the path length. */
   dash: number;
+  /** How far off the road the drone cruises, in viewBox units. */
+  flightOffset: number;
+  /** Scales vehicles so a car is the same pixel size in both layouts. */
+  vehicleScale: number;
   routeWidth: number;
   glowWidth: number;
   altWidth: number;
@@ -55,20 +69,22 @@ type Layout = {
 };
 
 const DESKTOP: Layout = {
-  viewBox: "0 0 1200 280",
-  flight: "M120 200 C 310 145, 500 175, 680 105 S 900 85, 1080 80",
+  viewBox: "0 -45 1200 325",
+  road: "M120 200 C 310 145, 500 175, 680 105 S 900 85, 1080 80",
   alt: "M120 200 C 280 230, 420 210, 560 165 S 860 145, 1080 80",
   start: { x: 120, y: 200 },
   end: { x: 1080, y: 80 },
   incident: { x: 790, y: 130 },
   incidentChip: { x: 790, y: 176 },
-  ikeja: { x: 108, y: 228, anchor: "start" },
+  ikeja: { x: 108, y: 260, anchor: "start" },
   lekki: { x: 1080, y: 30, anchor: "start" },
   gridRect: { x: -60, y: -60, w: 1320, h: 400 },
   gridStep: 46,
   gridStroke: 0.7,
   lagoon: "M560 280 C 650 238, 742 252, 830 206 S 1010 176, 1260 140 L1260 340 L560 340 Z",
   dash: 1010,
+  flightOffset: 56,
+  vehicleScale: 1,
   routeWidth: 2.4,
   glowWidth: 9,
   altWidth: 1.5,
@@ -91,20 +107,22 @@ const DESKTOP: Layout = {
 };
 
 const MOBILE: Layout = {
-  viewBox: "0 0 600 480",
-  flight: "M64 396 C 168 352, 232 300, 306 250 S 452 148, 536 84",
+  viewBox: "0 -26 600 520",
+  road: "M64 396 C 168 352, 232 300, 306 250 S 452 148, 536 84",
   alt: "M64 396 C 150 448, 268 452, 344 396 S 470 300, 536 84",
   start: { x: 64, y: 396 },
   end: { x: 536, y: 84 },
   incident: { x: 208, y: 437 },
   incidentChip: { x: 244, y: 392 },
-  ikeja: { x: 64, y: 428, anchor: "start" },
+  ikeja: { x: 64, y: 470, anchor: "start" },
   lekki: { x: 536, y: 56, anchor: "end" },
   gridRect: { x: -60, y: -60, w: 720, h: 600 },
   gridStep: 72,
   gridStroke: 1.1,
   lagoon: "M330 480 C 390 448, 440 460, 495 428 S 575 405, 660 385 L660 560 L330 560 Z",
   dash: 590,
+  flightOffset: 85,
+  vehicleScale: 1.55,
   routeWidth: 3.8,
   glowWidth: 14,
   altWidth: 2.4,
@@ -203,6 +221,45 @@ function MapLabel({ spec, size, children }: { spec: Label; size: number; childre
   );
 }
 
+/**
+ * A car or bus sitting on the road, nose pointing along +x so the caller's
+ * `rotate(tangent)` aims it the right way. The drone lifts off; these crawl.
+ */
+function Vehicle({ kind, scale }: { kind: "car" | "bus"; scale: number }) {
+  const body = kind === "bus" ? { x: -14, w: 28, h: 11, rx: 3 } : { x: -9.5, w: 19, h: 9.5, rx: 3.5 };
+  const mid = -body.h / 2;
+  return (
+    <g transform={`scale(${scale})`}>
+      <rect
+        x={body.x}
+        y={mid}
+        width={body.w}
+        height={body.h}
+        rx={body.rx}
+        fill="#141414"
+        stroke="rgba(255,255,255,0.9)"
+        strokeWidth="1.7"
+      />
+      {kind === "bus" ? (
+        <>
+          <rect x={-10} y={-3.2} width={7} height={6.4} rx={1.2} fill="rgba(255,255,255,0.78)" />
+          <rect x={-1.5} y={-3.2} width={7} height={6.4} rx={1.2} fill="rgba(255,255,255,0.78)" />
+        </>
+      ) : (
+        <rect x={-4.5} y={-3.2} width={9} height={6.4} rx={2.4} fill="rgba(255,255,255,0.82)" />
+      )}
+      <rect
+        x={body.x + body.w - 3.4}
+        y={mid + 1.6}
+        width={2.6}
+        height={body.h - 3.2}
+        rx={1.3}
+        fill="rgba(255,240,190,0.85)"
+      />
+    </g>
+  );
+}
+
 export function RouteCanvas() {
   const hostRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -213,6 +270,7 @@ export function RouteCanvas() {
   const chipRef = useRef<HTMLDivElement>(null);
   const incidentRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<SVGGElement>(null);
+  const trafficRef = useRef<SVGGElement>(null);
 
   // The route lays down once, on arrival, and never retracts.
   const [drawn, setDrawn] = useState(false);
@@ -240,13 +298,98 @@ export function RouteCanvas() {
     const drone = droneRef.current;
     if (!host || !svg || !path || !drone) return;
 
+    const length = path.getTotalLength();
+
+    /** Point + heading anywhere along the road. */
+    const onRoad = (s: number) => {
+      const at = Math.min(Math.max(s, 0), length);
+      const point = path.getPointAtLength(at);
+      const from = path.getPointAtLength(Math.max(0, at - 1));
+      const to = path.getPointAtLength(Math.min(length, at + 1));
+      return {
+        x: point.x,
+        y: point.y,
+        angle: (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI,
+      };
+    };
+
+    // The drone does not ride the road. Sample the road, push every point out
+    // along the upward normal, then ease the lift in and out so it launches
+    // from Ikeja and touches down on Lekki — free of the line in between.
+    const SAMPLES = 220;
+    const flight: Pt[] = [];
+    const lift = (t: number) => {
+      if (t >= LIFT_IN && t <= LIFT_OUT) return 1;
+      const u = t < LIFT_IN ? t / LIFT_IN : (1 - t) / (1 - LIFT_OUT);
+      return u * u * (3 - 2 * u);
+    };
+    for (let i = 0; i <= SAMPLES; i++) {
+      const t = i / SAMPLES;
+      const at = t * length;
+      const from = path.getPointAtLength(Math.max(0, at - 1));
+      const to = path.getPointAtLength(Math.min(length, at + 1));
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const mag = Math.hypot(dx, dy) || 1;
+      // These roads run left to right, so (dy, -dx) always points upward.
+      const k = (layout.flightOffset * lift(t)) / mag;
+      const p = path.getPointAtLength(at);
+      flight.push({ x: p.x + dy * k, y: p.y - dx * k });
+    }
+
+    const cum: number[] = [0];
+    for (let i = 1; i < flight.length; i++) {
+      cum.push(
+        cum[i - 1] + Math.hypot(flight[i].x - flight[i - 1].x, flight[i].y - flight[i - 1].y),
+      );
+    }
+    const flightLength = cum[cum.length - 1];
+
+    /** Point + heading anywhere along the offset flight curve. */
+    const onFlight = (s: number) => {
+      const at = Math.min(Math.max(s, 0), flightLength);
+      let i = 1;
+      while (i < cum.length - 1 && cum[i] < at) i++;
+      const span = cum[i] - cum[i - 1];
+      const u = span > 0 ? (at - cum[i - 1]) / span : 0;
+      const a = flight[i - 1];
+      const b = flight[i];
+      return {
+        x: a.x + (b.x - a.x) * u,
+        y: a.y + (b.y - a.y) * u,
+        angle: (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI,
+      };
+    };
+
+    // The exhaust tail rides the flight curve, not the road, so the tail paths
+    // are re-pointed here. Their JSX `d` never changes once a layout settles,
+    // so React leaves these imperatively-set values alone.
+    const flightD = `M${flight.map((p) => `${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" L")}`;
+    const tailGroup = trailRef.current;
+    if (tailGroup) {
+      for (const node of tailGroup.children) node.setAttribute("d", flightD);
+    }
+
+    /** Cars crawl the road on their own, much slower, clock. */
+    const placeTraffic = (cycle: number) => {
+      const group = trafficRef.current;
+      if (!group) return;
+      const nodes = group.children;
+      for (let i = 0; i < nodes.length; i++) {
+        const p = onRoad(((TRAFFIC_AT[i % TRAFFIC_AT.length] + cycle) % 1) * length);
+        nodes[i].setAttribute(
+          "transform",
+          `translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${p.angle.toFixed(2)})`,
+        );
+      }
+    };
+
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       setDrawn(true);
+      placeTraffic(0);
       return;
     }
-
-    const length = path.getTotalLength();
 
     /** SVG user units -> pixels relative to the box. */
     const toBox = (x: number, y: number) => {
@@ -258,12 +401,9 @@ export function RouteCanvas() {
     };
 
     const place = (progress: number, forward: boolean) => {
-      const at = length * progress;
-      const from = path.getPointAtLength(Math.max(0, at - 1));
-      const to = path.getPointAtLength(Math.min(length, at + 1));
-      let angle = (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
-      if (!forward) angle += 180;
-      const point = path.getPointAtLength(at);
+      const at = flightLength * progress;
+      const point = onFlight(at);
+      const angle = forward ? point.angle : point.angle + 180;
       drone.setAttribute(
         "transform",
         `translate(${point.x} ${point.y}) rotate(${angle.toFixed(2)})`,
@@ -301,6 +441,8 @@ export function RouteCanvas() {
     let chipW = 0;
     let chipH = 0;
     let chipChars = -1;
+    // Traffic runs on its own clock: it never turns around, it just crawls.
+    let trafficT = 0;
 
     const ping = (x: number, y: number) => {
       const group = pingRef.current;
@@ -359,8 +501,11 @@ export function RouteCanvas() {
         }
       }
 
-      if (raw === 1 && lastRaw < 1) ping(layout.end.x, layout.end.y);
-      if (raw === 0 && lastRaw > 0) ping(layout.start.x, layout.start.y);
+      trafficT = (trafficT + delta / TRAFFIC_CYCLE_MS) % 1;
+      placeTraffic(trafficT);
+
+      if (raw === 1 && lastRaw < 1) ping(flight[flight.length - 1].x, flight[flight.length - 1].y);
+      if (raw === 0 && lastRaw > 0) ping(flight[0].x, flight[0].y);
       lastRaw = raw;
       previous = progress;
 
@@ -428,8 +573,8 @@ export function RouteCanvas() {
   return (
     <div
       ref={hostRef}
-      className="relative aspect-[5/4] w-full overflow-hidden lg:aspect-auto lg:h-72"
-      aria-label="Recommended flight path from Ikeja to Lekki"
+      className="relative aspect-[15/13] w-full overflow-hidden lg:aspect-auto lg:h-72"
+      aria-label="Ikeja to Lekki: slow road traffic below, drone flying clear above it"
     >
       <svg
         ref={svgRef}
@@ -490,7 +635,7 @@ export function RouteCanvas() {
 
         <path
           className={drawn ? "route-glow is-drawn" : "route-glow"}
-          d={layout.flight}
+          d={layout.road}
           style={drawStyle}
           fill="none"
           stroke="rgba(255,255,255,0.13)"
@@ -500,7 +645,7 @@ export function RouteCanvas() {
         <path
           ref={pathRef}
           className={drawn ? "route-draw is-drawn" : "route-draw"}
-          d={layout.flight}
+          d={layout.road}
           style={drawStyle}
           fill="none"
           stroke="rgba(255,255,255,0.95)"
@@ -510,6 +655,15 @@ export function RouteCanvas() {
 
         <circle cx={layout.start.x} cy={layout.start.y} r={layout.dotR} fill="#fff" />
         <circle cx={layout.end.x} cy={layout.end.y} r={layout.dotR} fill="#fff" />
+
+        {/* The road: cars and buses that never quite get anywhere. */}
+        <g ref={trafficRef} className={drawn ? "traffic is-drawn" : "traffic"}>
+          {VEHICLES.map((kind, i) => (
+            <g key={i}>
+              <Vehicle kind={kind} scale={layout.vehicleScale} />
+            </g>
+          ))}
+        </g>
 
         <g ref={pingRef}>
           <circle
@@ -526,7 +680,7 @@ export function RouteCanvas() {
             <path
               key={seg.t}
               data-tail={seg.t}
-              d={layout.flight}
+              d={layout.road}
               fill="none"
               stroke={ACCENT}
               strokeOpacity={seg.o}
@@ -578,6 +732,13 @@ export function RouteCanvas() {
         }
         @keyframes routeDraw {
           to { stroke-dashoffset: 0; }
+        }
+        .traffic {
+          opacity: 0;
+          transition: opacity 700ms ease 1.5s;
+        }
+        .traffic.is-drawn {
+          opacity: 1;
         }
         .drone, .trail {
           opacity: 0;
