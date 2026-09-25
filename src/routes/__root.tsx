@@ -10,7 +10,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ySpace — Drone delivery across Lagos" },
+      { title: `${APP_NAME} — Drone delivery across Lagos` },
       {
         name: "description",
         content:
