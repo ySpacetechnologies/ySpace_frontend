@@ -1,0 +1,8 @@
+# ySpace — autonomous drone delivery across Lagos, Nigeria
+User-agent: *
+Allow: /
+
+# Sign-in popup window, not a content page
+Disallow: /auth
+
+Sitemap: https://yspace.live/sitemap.xml

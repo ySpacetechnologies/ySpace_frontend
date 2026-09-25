@@ -41,7 +41,7 @@ export function Nav() {
             <Logo />
           </a>
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-7 md:flex">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 gap-7 lg:flex">
             {LINKS.map((l) => (
               <a
                 key={l.href}
@@ -68,7 +68,7 @@ export function Nav() {
             </a>
             <button
               type="button"
-              className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 md:hidden"
+              className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => setOpen((v) => !v)}
             >
@@ -92,7 +92,7 @@ export function Nav() {
 
       <div
         className={cn(
-          "fixed inset-0 z-40 flex flex-col items-center justify-center gap-7 bg-bg transition-opacity duration-200 md:hidden",
+          "fixed inset-0 z-40 flex flex-col items-center justify-center gap-7 bg-bg transition-opacity duration-200 lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       >

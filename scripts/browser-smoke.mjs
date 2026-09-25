@@ -126,7 +126,10 @@ try {
       const el = document.documentElement;
       return el.scrollWidth > el.clientWidth + 1;
     });
-    await page.screenshot({ path: vp.screenshot, fullPage: false });
+    // `caret: "initial"`: the default "hide" writes `caret-color: transparent` onto
+    // every input. If that lands while React is still hydrating it shows up as a
+    // bogus hydration mismatch in consoleErrors.
+    await page.screenshot({ path: vp.screenshot, fullPage: false, caret: "initial" });
     await page.close();
 
     viewports[vp.name] = {

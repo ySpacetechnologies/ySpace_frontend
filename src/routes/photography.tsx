@@ -8,7 +8,7 @@ function Page() {
     <InnerPage title="Photography & Videography">
       <p>
         Aerial photography and videography using the same airframes that fly
-        parcels. Book a shoot through hello@yspace.ng.
+        parcels. Book a shoot through hello@yspace.live.
       </p>
     </InnerPage>
   );

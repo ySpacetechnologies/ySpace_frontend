@@ -9,7 +9,7 @@ function Page() {
       <p>
         We hire pilots, software engineers, mechanics and operators who want to
         put cargo in the air over Lagos. Open roles are listed as they open —
-        write to careers@yspace.ng.
+        write to careers@yspace.live.
       </p>
     </InnerPage>
   );
